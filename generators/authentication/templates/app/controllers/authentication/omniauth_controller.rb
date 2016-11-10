@@ -6,7 +6,7 @@ class Api::V1::Authentication::OmniauthController < ApplicationController
     elsif params[:provider].downcase == 'google_oauth2'
       @user = User.google_plus_sign_in!(omniauth_params)
     else
-      raise Authentication::ProviderNotSuported
+      raise AuthenticationErrors::ProviderNotSuported
     end
   end
   private

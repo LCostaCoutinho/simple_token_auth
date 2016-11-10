@@ -1,3 +1,3 @@
-module Authentication
+module AuthenticationErrors
 	class InvalidCredentials < StandardError; end
 end
