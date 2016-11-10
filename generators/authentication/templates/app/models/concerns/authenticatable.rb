@@ -14,7 +14,7 @@ module Authenticatable
 
 		def sign_in!(auth_value, password, metadata={})
 			resource = sign_in(auth_value, password, metadata)
-			raise CustomException::Authentication::InvalidCredentials if resource.nil?
+			raise Authentication::InvalidCredentials if resource.nil?
 			return resource
 		end
 
@@ -64,7 +64,7 @@ module Authenticatable
 
 	def sign_out(client)
 		auth  = self.authentications.find_by_client!(client)
-		# raise CustomException::Authentication::InvalidClient if auth.nil?
+		# raise Authentication::InvalidClient if auth.nil?
 		auth.destroy!
 	end
 
