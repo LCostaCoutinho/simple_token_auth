@@ -20,7 +20,7 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
     sub_file 'config/routes.rb', search = "Rails.application.routes.draw do", "#{search}\n\n#{route_code}\n"
 
     sub_file 'app/controllers/application_controller.rb', search = "protect_from_forgery with: :exception", "protect_from_forgery with: :null_session \n\n#{application_controller_code}\n"
-    sub_file "app/models/#{file_name}.rb", search = "end \n\n#{application_controller_code}\n"
+    sub_file "app/models/#{file_name}.rb", search = "end"," \n\n#{model_code}\n#{search}"
 
 
 
