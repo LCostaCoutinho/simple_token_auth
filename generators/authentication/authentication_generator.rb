@@ -13,7 +13,7 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
     copy_file "app/models/authentication.rb", "app/models/authentication.rb"
 
 
-    directory "lib/authentication_errors", "lib/authentication_errors"
+    directory "lib/authentication_error", "lib/authentication_error"
 
     sub_file 'config/routes.rb', search = "Rails.application.routes.draw do", "#{search}\n\n#{route_code}\n"
     sub_file 'app/controllers/application_controller.rb', search = "protect_from_forgery with: :exception", "#{search}\n\n#{application_controller_code}\n"
