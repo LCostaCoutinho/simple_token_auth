@@ -1,3 +1,3 @@
-module CustomException::Authentication
+module Authentication
 	class InvalidCredentials < StandardError; end
 end
