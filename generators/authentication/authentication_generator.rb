@@ -16,7 +16,7 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
     directory "lib/authentication_error", "lib/authentication_error"
 
     sub_file 'config/routes.rb', search = "Rails.application.routes.draw do", "#{search}\n\n#{route_code}\n"
-    sub_file 'app/controllers/application_controller.rb', search = "protect_from_forgery with: :exception", "#{search}\n\n#{application_controller_code}\n"
+    sub_file 'app/controllers/application_controller.rb', search = "protect_from_forgery", "protect_from_forgery with: :null_session \n\n#{application_controller_code}\n"
 
 
 
@@ -112,7 +112,7 @@ RUBY
 
     private
     def authenticate_user
-      user = User.authenticate_user_by_token(request.headers['uid'],request.headers['client'], request.headers['access-token'])
+      user = User.authenticate_by_token(request.headers['uid'],request.headers['client'], request.headers['access-token'])
       unless user.nil?
         return user
       end

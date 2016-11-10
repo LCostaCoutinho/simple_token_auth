@@ -1,6 +1,7 @@
 class Api::V1::Authentication::SessionsController < ApplicationController
   before_action :authenticate_user!, only: [:destroy]
   before_action :sign_in_params, only: [:create]
+  skip_after_action :build_response_headers, only: [:destroy]
 
 
   def create
@@ -8,7 +9,7 @@ class Api::V1::Authentication::SessionsController < ApplicationController
   end
 
   def destroy
-    @user.sign_out!(request.headers['client'])
+    @user.sign_out(request.headers['client'])
   end
 
   private
