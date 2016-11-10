@@ -1,3 +1,3 @@
-module AuthenticationErrors
+module AuthenticationError
 	class Unauthorized < StandardError; end
 end

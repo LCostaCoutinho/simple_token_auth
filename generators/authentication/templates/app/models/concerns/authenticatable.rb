@@ -14,7 +14,7 @@ module Authenticatable
 
 		def sign_in!(auth_value, password, metadata={})
 			resource = sign_in(auth_value, password, metadata)
-			raise AuthenticationErrors::InvalidCredentials if resource.nil?
+			raise AuthenticationError::InvalidCredentials if resource.nil?
 			return resource
 		end
 

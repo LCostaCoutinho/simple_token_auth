@@ -85,7 +85,7 @@ RUBY
       render json: { errors: [exception.message] }, status: :bad_request
     end
 
-    rescue_from Authorization::Unauthorized do |exception|
+    rescue_from AuthenticationError::Unauthorized do |exception|
       render json: { errors: [exception.message] }, status: :unauthorized
     end
 
@@ -95,7 +95,7 @@ RUBY
 
     def authenticate_user!
       @user = authenticate_user
-      raise Authorization::Unauthorized, 'Usuário não tem permissão de acesso.' if @user.nil?
+      raise AuthenticationError::Unauthorized, 'Usuário não tem permissão de acesso.' if @user.nil?
     end
 
     def build_response_headers
@@ -106,13 +106,13 @@ RUBY
       else
         response.headers['uid'] = request.headers['uid']
         response.headers['client']  =  request.headers['client']
-        response.headers['access-token']  = request.headers['access_token']
+        response.headers['access-token']  = request.headers['access-token']
       end
     end
 
     private
     def authenticate_user
-      user = User.authenticate_user_by_session(request.headers)
+      user = User.authenticate_user_by_token(request.headers['uid'],request.headers['client'], request.headers['access-token'])
       unless user.nil?
         return user
       end

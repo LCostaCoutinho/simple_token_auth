@@ -1,9 +1,10 @@
 class Api::V1::Authentication::SessionsController < ApplicationController
   before_action :authenticate_user!, only: [:destroy]
+  before_action :sign_in_params, only: [:create]
 
 
   def create
-    @user = User.sign_in!(sign_in_params)
+    @user = User.sign_in!(params[:auth],params[:password])
   end
 
   def destroy
@@ -13,9 +14,8 @@ class Api::V1::Authentication::SessionsController < ApplicationController
   private
 
   def sign_in_params
-    params.require(:email)
+    params.require(:auth)
     params.require(:password)
-    params.permit(:email,:password)
   end
 
   def omniauth_params

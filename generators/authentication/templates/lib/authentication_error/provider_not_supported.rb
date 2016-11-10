@@ -1,3 +1,3 @@
-module AuthenticationErrors
+module AuthenticationError
 	class ProviderNotSupported < StandardError; end
 end
