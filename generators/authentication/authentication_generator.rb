@@ -9,7 +9,7 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
     directory "app/controllers/authentication", "app/controllers/api/v1/authentication"
 
 
-    copy_file "app/models/concerns/authentication.rb", "app/models/concerns/authenticatable.rb"
+    copy_file "app/models/concerns/authenticatable.rb", "app/models/concerns/authenticatable.rb"
     copy_file "app/models/authentication.rb", "app/models/authentication.rb"
 
 
