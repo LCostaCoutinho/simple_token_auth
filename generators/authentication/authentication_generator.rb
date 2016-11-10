@@ -4,6 +4,8 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
 
   source_root File.expand_path('../templates', __FILE__)
 
+  argument :class_name, :type => :string, :default => "User"
+
   def generate_layout
 
     directory "app/controllers/authentication", "app/controllers/api/v1/authentication"
@@ -16,7 +18,9 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
     directory "lib/authentication_error", "lib/authentication_error"
 
     sub_file 'config/routes.rb', search = "Rails.application.routes.draw do", "#{search}\n\n#{route_code}\n"
-    sub_file 'app/controllers/application_controller.rb', search = "protect_from_forgery", "protect_from_forgery with: :null_session \n\n#{application_controller_code}\n"
+
+    sub_file 'app/controllers/application_controller.rb', search = "protect_from_forgery with: :exception", "protect_from_forgery with: :null_session \n\n#{application_controller_code}\n"
+    sub_file "app/models/#{file_name}.rb", search = "end \n\n#{application_controller_code}\n"
 
 
 
@@ -62,6 +66,18 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
 RUBY
   end
 
+  def model_code
+
+<<RUBY
+
+    include Authenticatable
+
+    def self.authentication_keys
+      [:email]
+    end
+RUBY
+  end
+
 
 
 
@@ -88,6 +104,12 @@ RUBY
     rescue_from AuthenticationError::Unauthorized do |exception|
       render json: { errors: [exception.message] }, status: :unauthorized
     end
+
+    rescue_from AuthenticationError::InvalidCredentials do |exception|
+      render json: { errors: ['Dados inválidos!'] }, status: :unauthorized
+    end
+
+
 
     def current_user
       return @user
@@ -139,6 +161,10 @@ RUBY
 
     print "    \e[1m\e[31mmodified\e[0m\e[22m  #{relative_file}\n"
 
+  end
+
+    def file_name
+    class_name.underscore
   end
 
 end
