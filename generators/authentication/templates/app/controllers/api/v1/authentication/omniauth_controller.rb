@@ -1,4 +1,4 @@
-class Api::V1::Authentication::OmniauthController < ApplicationController
+class Api::V1::Authentication::OmniauthController < Api::V1::BaseController
 
   def omniauth
     if params[:provider].downcase == 'facebook'

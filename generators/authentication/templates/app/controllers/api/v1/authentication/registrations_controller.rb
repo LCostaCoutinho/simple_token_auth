@@ -1,4 +1,4 @@
-class Api::V1::Authentication::RegistrationsController < ApplicationController
+class Api::V1::Authentication::RegistrationsController < Api::V1::BaseController
   before_action :authenticate_user!, only: [:destroy]
   skip_after_action :build_response_headers, only: [:destroy]
 

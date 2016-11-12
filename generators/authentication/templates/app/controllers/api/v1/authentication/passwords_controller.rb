@@ -1,4 +1,4 @@
-class Api::V1::Authentication::PasswordsController < ApplicationController
+class Api::V1::Authentication::PasswordsController < Api::V1::BaseController
   before_action :authenticate_user!, only: [:update]
   skip_after_action :build_response_headers, only: [:create]
 
