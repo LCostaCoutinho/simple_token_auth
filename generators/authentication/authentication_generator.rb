@@ -20,6 +20,7 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
 
     sub_file 'config/routes.rb', search = "Rails.application.routes.draw do", "#{search}\n\n#{route_code}\n"
     sub_file "app/models/#{file_name}.rb", search = "end"," \n\n#{model_code}\n#{search}"
+    sub_file "config/application.rb", search = "class Application < Rails::Application"," \n\n#{application_config_code}\n#{search}"
 
 
 
@@ -74,6 +75,13 @@ RUBY
     def self.authentication_keys
       [:email]
     end
+RUBY
+  end
+
+  def application_config_code
+
+<<RUBY
+    config.autoload_paths << Rails.root.join('lib')
 RUBY
   end
 
