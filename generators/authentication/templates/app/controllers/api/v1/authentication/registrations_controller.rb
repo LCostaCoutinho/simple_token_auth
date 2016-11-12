@@ -4,7 +4,7 @@ class Api::V1::Authentication::RegistrationsController < ApplicationController
 
   def create
     @user = User.create!(sign_up_params)
-    @user.created_auth = @user.authentications.create!
+    bypass_authenticate(@user)
   end
 
   def destroy

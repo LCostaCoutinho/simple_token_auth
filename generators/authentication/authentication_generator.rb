@@ -8,8 +8,9 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
 
   def generate_layout
 
-    directory "app/controllers/authentication", "app/controllers/api/v1/authentication"
-
+    directory "app/controllers/api/v1/authentication", "app/controllers/api/v1/authentication"
+    copy_file "app/controllers/concerns/token_authentication.rb", "app/controllers/concerns/token_authentication.rb"
+    copy_file "app/controllers/api/v1/base_controller.rb", "app/controllers/api/v1/base_controller.rb"
 
     copy_file "app/models/concerns/authenticatable.rb", "app/models/concerns/authenticatable.rb"
     copy_file "app/models/authentication.rb", "app/models/authentication.rb"
@@ -18,8 +19,6 @@ class AuthenticationGenerator < Rails::Generators::NamedBase
     directory "lib/authentication_error", "lib/authentication_error"
 
     sub_file 'config/routes.rb', search = "Rails.application.routes.draw do", "#{search}\n\n#{route_code}\n"
-
-    sub_file 'app/controllers/application_controller.rb', search = "protect_from_forgery with: :exception", "protect_from_forgery with: :null_session \n\n#{application_controller_code}\n"
     sub_file "app/models/#{file_name}.rb", search = "end"," \n\n#{model_code}\n#{search}"
 
 
@@ -75,72 +74,6 @@ RUBY
     def self.authentication_keys
       [:email]
     end
-RUBY
-  end
-
-
-
-
-  def application_controller_code
-
-
-<<RUBY
-
-    after_action :build_response_headers
-
-    rescue_from ActiveRecord::RecordInvalid do |exception|
-      errors = exception.to_s.match(/\:(.*)/)
-      errors = errors[1][1..errors[1].length].split(', ')
-      render json: { errors: errors }, status: :unprocessable_entity
-    end
-    rescue_from ActiveRecord::RecordNotFound do |exception|
-      render json: { errors: [exception.message]  }, status: :not_found
-    end
-
-    rescue_from ActionController::ParameterMissing do |exception|
-      render json: { errors: [exception.message] }, status: :bad_request
-    end
-
-    rescue_from AuthenticationError::Unauthorized do |exception|
-      render json: { errors: [exception.message] }, status: :unauthorized
-    end
-
-    rescue_from AuthenticationError::InvalidCredentials do |exception|
-      render json: { errors: ['Dados inválidos!'] }, status: :unauthorized
-    end
-
-
-
-    def current_user
-      return @user
-    end
-
-    def authenticate_user!
-      @user = authenticate_user
-      raise AuthenticationError::Unauthorized, 'Usuário não tem permissão de acesso.' if @user.nil?
-    end
-
-    def build_response_headers
-      if @user.created_auth
-        response.headers['uid']  = @user.uid
-        response.headers['client']  = @user.created_auth.client
-        response.headers['access-token']  = @user.created_auth.access_token
-      else
-        response.headers['uid'] = request.headers['uid']
-        response.headers['client']  =  request.headers['client']
-        response.headers['access-token']  = request.headers['access-token']
-      end
-    end
-
-    private
-    def authenticate_user
-      user = User.authenticate_by_token(request.headers['uid'],request.headers['client'], request.headers['access-token'])
-      unless user.nil?
-        return user
-      end
-      return nil
-    end
-
 RUBY
   end
 

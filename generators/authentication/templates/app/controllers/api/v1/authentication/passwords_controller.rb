@@ -3,7 +3,8 @@ class Api::V1::Authentication::PasswordsController < ApplicationController
   skip_after_action :build_response_headers, only: [:create]
 
   def create
-    User.send_recovery_password_email!(password_recovery_params)
+    params.require(:email)
+    reset_password(params[:email])
   end
 
   def update
